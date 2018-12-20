@@ -1,0 +1,46 @@
+<!-- HTML -->
+<div id="tableGoesHere"></div>
+
+// Print Table
+                document.getElementById('tableGoesHere').innerHTML = json2table(obj.results);
+
+<script>
+    function json2table(json, classes) {
+        // Everything goes in here
+        var cols = Object.keys(json[0]);
+        var headerRow = '';
+        var bodyRows = '';
+        classes = classes || '';
+
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        cols.map(function(col) {
+            headerRow += '<th>' + capitalizeFirstLetter(col) + '</th>';
+        });
+
+        json.map(function(row) {
+            bodyRows += '<tr>';
+            // To do: Loop over object properties and create cells
+            bodyRows += '</tr>';
+        });
+
+        cols.map(function(colName) {
+            bodyRows += '<td>' + bodyRows[colName] + '<td>';
+        });
+        
+        return '<table class="' + classes + '"><thead><tr>' + headerRow + '</tr></thead><tbody>' + bodyRows + '</tbody></table>';
+    }
+
+</script>
+
+
+<!-- PLAY AUDIO -->
+<audio id="track" controls src="http://upload.wikimedia.org/wikipedia/commons/a/a9/Tromboon-sample.ogg"
+       ontimeupdate="document.getElementById('tracktime').innerHTML = 'Seconds: ' + this.currentTime + ' / ' + this.duration;">
+    <p>Your browser does not support the audio element</p>
+</audio>
+<span id="tracktime">Seconds: 0.0 / 0.0</span> -->
+<!-- <button onclick="document.getElementById('track').play();">Play</button>
+<button onclick="document.getElementById('track').pause();">Pause</button>

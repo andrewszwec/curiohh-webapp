@@ -1,0 +1,155 @@
+
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<script>
+    // Usage
+    // Test in these two cases
+    // Case 1 - Has Link and timestamp
+    // file:///Users/andrew/Documents/consulting/curiohh/curiohh-webapp/index.html?audio_url=https%3A%2F%2Fwww.listennotes.com%2Fe%2Fp%2F6a5d0fc2e62f443291661b33787a6492%2F&timestamp=20
+    // Case 2 - No Link and timestamp
+    // file:///Users/andrew/Documents/consulting/curiohh/curiohh-webapp/index.html
+
+    // Listen Notes - Full text Search
+    // TODO
+    // 1. Get query string from page form
+    // 2. Output results to screen (Just podcast Title, Episode Title and URL) 
+    var podcast_url = "https://storage.googleapis.com/curiohh/podcast.mp3"
+
+    function myFunction() {
+        var urlPrefix = "https://listennotes.p.mashape.com/api/v1/search?language=English&offset=0&only_in=title&q=";
+        var userQuery = document.getElementById('querytext').value //"twista"; // get this from page form
+        var urlSuffix = "&sort_by_date=1&type=episode";
+        var url = urlPrefix.concat(userQuery).concat(urlSuffix);
+
+        console.log(url)
+
+        const Http = new XMLHttpRequest();
+        Http.open("GET", url);
+        Http.setRequestHeader("X-Mashape-Key", "hPcb4dXVIwmshz9bvm5PUjvzknz4p18yHDQjsnjNRxv2o1mYPI")
+        Http.setRequestHeader("Accept", "application/json")
+        Http.send();
+
+        Http.onreadystatechange=function(){
+            if(this.readyState==4 && this.status==200){
+                // Print when ready
+                console.log(Http.responseText)
+                var obj = JSON.parse(Http.responseText);
+                podcast_url = obj.results[0].audio;
+                document.getElementById("podcast_title").innerHTML = obj.results[0].title_highlighted;
+                document.getElementById("podcast_audio").innerHTML = podcast_url;
+                document.getElementById("track").src = podcast_url;
+
+                // Facebook 
+                document.getElementById("facebook_share").href = 'https://www.facebook.com/sharer.php?s=100&p[url]=https://www.curiohh.com/index.html?audio_url='  + podcast_url;
+                // Linkedin
+                document.getElementById("linkedin_share").href = 'http://www.linkedin.com/shareArticle?url=' + podcast_url + '&title=Listen%20on%20Curiohh!';
+                // twitter_share
+                document.getElementById("twitter_share").href = 'https://twitter.com/share?url=' + podcast_url + '&text=Listen%20on%20Curiohh!&via=curiohh&hashtags=curiohh';
+
+            }
+        }
+
+    }
+
+    function makeSocialUrls() {
+        // Get current play head
+        var playhead = document.getElementById("track").currentTime 
+        console.log(playhead)
+        // Facebook &timestamp=20
+        document.getElementById("facebook_share").href = 'https://www.facebook.com/sharer.php?s=100&p[url]=https://www.curiohh.com/index.html?audio_url=' + '&timestamp=' + playhead  + podcast_url;
+        document.getElementById("facebook_share").style.visibility = "visible" 
+        // Linkedin
+        document.getElementById("linkedin_share").href = 'http://www.linkedin.com/shareArticle?url=' + '&timestamp=' + playhead + podcast_url + '&title=Listen%20on%20Curiohh!';
+        document.getElementById("linkedin_share").style.visibility = "visible"
+        // twitter_share
+        document.getElementById("twitter_share").href = 'https://twitter.com/share?url=' + '&timestamp=' + playhead + podcast_url + '&text=Listen%20on%20Curiohh!&via=curiohh&hashtags=curiohh';
+        document.getElementById("twitter_share").style.visibility = "visible"
+    }
+</script>
+<script>
+    // If a URL is passed to the website load it to begin playing
+    var urlParams = new URLSearchParams(window.location.search);
+    var key, audio_url;
+    audio_url = urlParams.get('audio_url');
+    timestamp = urlParams.get('timestamp');
+    if (audio_url == null){
+    audio_url = "https://storage.googleapis.com/curiohh/podcast.mp3"
+    timestamp = 0.0
+    }
+    window.onload = function() { 
+    // document.getElementById("key").innerHTML = audio_url;
+    console.log(audio_url)
+    console.log(timestamp)
+    document.getElementById("track").src = audio_url
+    document.getElementById("track").currentTime = timestamp
+    }  
+</script> 
+
+
+
+
+<center><h1>Curiohh Audio Player</h1></center>
+<center><h2>Listen harder.</h2></center>
+
+<br>
+<br>
+<br>
+<center><form>
+    <input type="text" name="query" id="querytext" value="Type podcast name..." size="100"><br>
+</form></center>
+<br>
+<center><button onclick="myFunction()">Try it</button></center>
+
+<br>
+<center><p id="podcast_title"></p></center>
+<center><p id="podcast_audio"></p></center>
+<br>
+<br>
+<center>
+<audio id="track" controls src="http://upload.wikimedia.org/wikipedia/commons/a/a9/Tromboon-sample.ogg"
+       ontimeupdate="document.getElementById('tracktime').innerHTML = 'Seconds: ' + this.currentTime;"
+       preload="auto" >
+    <p>Your browser does not support the audio element</p>
+</audio>
+
+<!-- <script>
+  myAudio=document.getElementById('track');
+  myAudio.addEventListener('canplaythrough', function() {
+    if(this.currentTime < 12){this.currentTime = 12;}
+    this.play();
+  });
+</script> -->
+
+<br>
+<br>
+<span id="tracktime">Seconds: 0.0</span>
+<br>
+<br>
+
+
+
+
+<p>Click here to share on social media:<br>
+<center><button onclick="makeSocialUrls()">Make Social Media URLs</button></center>
+<br>
+<br>
+
+<a id=facebook_share href='https://www.facebook.com/sharer.php?s=100&p[url]=https://www.curiohh.com/' target="_blank">Facebook</a><br>
+<a id=linkedin_share href='http://www.linkedin.com/shareArticle?url=https://www.curiohh.com/&title=Listen%20on%20Curiohh!' target="_blank">Linkedin</a><br>
+<a id=twitter_share href='https://twitter.com/share?url=https://www.curiohh.com/&text=Listen%20on%20Curiohh!&via=curiohh&hashtags=curiohh' target="_blank">Twitter</a><br>
+</p>
+
+<script>
+    // Hide Social Media Links
+    document.getElementById("facebook_share").style.visibility = "hidden"
+    document.getElementById("linkedin_share").style.visibility = "hidden"
+    document.getElementById("twitter_share").style.visibility = "hidden"
+</script>
+
+</center>
+
+</body>
+</html>

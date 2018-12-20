@@ -1,0 +1,72 @@
+
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Curiohh Audio Player</h1>
+
+<p>Listen harder.</p>
+
+
+<script>
+    // Full text Search
+    // Listen Notes
+    var urlPrefix = "https://listennotes.p.mashape.com/api/v1/search?language=English&offset=0&only_in=title&q=";
+    // var userQuery = 'this+week+in+startups+australia';
+    var userQuery = "twista";
+    var urlSuffix = "&sort_by_date=1&type=episode";
+    var urlComplete = urlPrefix.concat(userQuery).concat(urlSuffix);
+
+    console.log(urlComplete)
+
+    const Http2 = new XMLHttpRequest();
+    const url2 = urlComplete
+    Http2.open("GET", url2);
+    Http2.setRequestHeader("X-Mashape-Key", "hPcb4dXVIwmshz9bvm5PUjvzknz4p18yHDQjsnjNRxv2o1mYPI")
+    Http2.setRequestHeader("Accept", "application/json")
+    Http2.send();
+
+    Http2.onreadystatechange=function(){
+        if(this.readyState==4 && this.status==200){
+            console.log(Http2.responseText)
+        }
+    }
+</script>
+
+
+
+
+
+<!-- <script>
+    // Listen Notes Type Ahead
+    var urlPrefix = "https://listennotes.p.mashape.com/api/v1/typeahead?q=";
+    var userQuery = 'this week in startups australia';
+    var urlSuffix = "&show_genres=0&show_podcasts=1";
+    var urlComplete = urlPrefix.concat(userQuery).concat(urlSuffix);
+
+    const Http = new XMLHttpRequest();
+    // const url="https://listennotes.p.mashape.com/api/v1/typeahead?q=star&show_genres=0&show_podcasts=1";
+    const url = urlComplete
+    Http.open("GET", url);
+    Http.setRequestHeader("X-Mashape-Key", "hPcb4dXVIwmshz9bvm5PUjvzknz4p18yHDQjsnjNRxv2o1mYPI")
+    Http.setRequestHeader("Accept", "application/json")
+    Http.send();
+
+    Http.onreadystatechange=function(){
+        if(this.readyState==4 && this.status==200){
+            console.log(Http.responseText)
+        }
+    }
+</script> -->
+
+<audio id="track" src="http://upload.wikimedia.org/wikipedia/commons/a/a9/Tromboon-sample.ogg"
+       ontimeupdate="document.getElementById('tracktime').innerHTML = this.currentTime + ' / ' + this.duration;">
+    <p>Your browser does not support the audio element</p>
+</audio>
+<span id="tracktime">0.0 / 0.0</span>
+<button onclick="document.getElementById('track').play();">Play</button>
+<button onclick="document.getElementById('track').pause();">Pause</button>
+
+</body>
+</html>
